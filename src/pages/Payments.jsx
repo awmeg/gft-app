@@ -1,16 +1,30 @@
 import { useState } from 'react'
-import { payments, paymentTotal, paymentMethod, policies } from '../data.js'
+import { paymentHistory, paymentTotal, paymentMethod, policyById } from '../data.js'
 import { ChevronIcon } from '../icons.jsx'
 import { PageHead, Facts, Pill, kr, fmtDate } from '../lib.jsx'
+import { useStore } from '../store.jsx'
+import { yearlyPrice, totalYearly } from '../rules.js'
+
+// Næste opkrævning beregnes ud fra kundens aktuelle policer, så ændringer i TIA Admin slår igennem
+export const upcomingPayment = (state) => ({
+  id: 'B-2027-01',
+  due: '2027-01-02',
+  status: 'upcoming',
+  period: '1. januar – 31. marts 2027',
+  lines: Object.entries(state.policies).map(([id, p]) => [policyById(id).title, Math.round(yearlyPrice(id, p) / 4)]),
+})
+
+const allPayments = (state) => [upcomingPayment(state), ...paymentHistory.map((p) => ({ ...p, status: 'paid' }))]
 
 const statusPill = (p) => (p.status === 'paid' ? <Pill tone="ok">Betalt</Pill> : <Pill tone="warn">Kommende</Pill>)
 
 export function PaymentList() {
-  const next = payments.find((p) => p.status === 'upcoming')
-  const history = payments.filter((p) => p.status === 'paid')
+  const { state } = useStore()
+  const next = upcomingPayment(state)
+  const history = allPayments(state).filter((p) => p.status === 'paid')
   const years = [...new Set(history.map((p) => p.due.slice(0, 4)))]
   const [year, setYear] = useState(years[0])
-  const yearly = policies.reduce((s, p) => s + p.yearly, 0)
+  const yearly = totalYearly(state)
 
   return (
     <>
@@ -56,7 +70,8 @@ export function PaymentList() {
 }
 
 export function PaymentDetail({ id }) {
-  const p = payments.find((x) => x.id === id)
+  const { state } = useStore()
+  const p = allPayments(state).find((x) => x.id === id)
   const back = { path: '/betaling', label: 'Betaling' }
   const [sent, setSent] = useState(false)
   if (!p) return <PageHead title="Betalingen findes ikke" back={back} />

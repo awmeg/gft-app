@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { policies, policyById, claimStatuses } from '../data.js'
+import { policyById, claimStatuses } from '../data.js'
+import { useStore } from '../store.jsx'
 import { PolicyIcon, ChevronIcon, PlusIcon } from '../icons.jsx'
 import { PageHead, Facts, Pill, kr, fmtDate, navigate } from '../lib.jsx'
 
@@ -136,8 +137,10 @@ export function ClaimDetail({ id, claims }) {
 }
 
 export function NewClaim({ query, onCreate }) {
+  const { state } = useStore()
+  const policyIds = Object.keys(state.policies)
   const [form, setForm] = useState({
-    policyId: query.get('forsikring') || 'indbo',
+    policyId: policyIds.includes(query.get('forsikring')) ? query.get('forsikring') : policyIds[0],
     title: '',
     incident: new Date().toISOString().slice(0, 10),
     location: '',
@@ -156,7 +159,7 @@ export function NewClaim({ query, onCreate }) {
       status: 'received',
       handler: '',
       estimate: null,
-      deductible: policyById(form.policyId).deductible,
+      deductible: state.policies[form.policyId].deductible,
       payout: null,
       documents: [],
       nextStep: 'Vi har modtaget din anmeldelse. En sagsbehandler kontakter dig inden for 2 hverdage.',
@@ -172,7 +175,7 @@ export function NewClaim({ query, onCreate }) {
         <label>
           Hvilken forsikring?
           <select value={form.policyId} onChange={set('policyId')}>
-            {policies.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+            {policyIds.map((id) => <option key={id} value={id}>{policyById(id).title}</option>)}
           </select>
         </label>
         <label>

@@ -300,3 +300,115 @@ li.read .bullet { background: transparent; border: 1.5px solid var(--green); }
 
 @keyframes fade { from { opacity: 0; } }
 @keyframes pop { from { transform: translateY(12px); opacity: 0; } }
+
+/* ---------- Vigtig info: punkter styret fra TIA ---------- */
+.sidebar-foot .admin-link { color: rgba(255,255,255,.32); font-size: 12.5px; padding-top: 14px; }
+.sidebar-foot .admin-link:hover { color: rgba(255,255,255,.6); }
+.sidebar .count { margin-left: 2px; }
+.tip strong { display: flex; align-items: center; gap: 8px; }
+.tip-alert { background: #fff6ec; border-color: #f3c99b; }
+.tip-alert strong { color: #8a4b00; }
+
+.advice .section-title { margin-top: 0; }
+.advice-list { display: grid; gap: 12px; margin-bottom: 8px; }
+@media (min-width: 960px) { .advice-list { grid-template-columns: 1fr 1fr; } }
+.advice-card { background: #fff; border-radius: 12px; padding: 16px 18px; border: 1px solid #f3c99b; box-shadow: 0 2px 0 #f6dcbf; display: flex; flex-direction: column; gap: 8px; animation: pop .25s; }
+.advice-card.compact { box-shadow: none; padding: 12px 14px; margin-bottom: 10px; background: #fffaf4; }
+.advice-head { display: flex; gap: 12px; align-items: flex-start; color: #555; }
+.advice-head .tag { color: #b26a00; margin-bottom: 2px; }
+.advice-card h3 { font-size: 16px; color: var(--ink); margin: 0; }
+.advice-card p { font-size: 14px; line-height: 1.5; margin: 0; }
+.advice-card .link { align-self: flex-start; }
+.advice-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.advice-actions .btn, .modal .advice-actions .btn { margin: 0; width: auto; }
+.modal-advice { margin-bottom: 8px; }
+.modal .modal-advice > h3 { color: #b26a00; }
+
+.all-good { display: flex; gap: 14px; align-items: flex-start; background: var(--green-tint); border-radius: 12px; padding: 16px 18px; }
+.all-good-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-weight: 800; flex-shrink: 0; }
+.all-good strong { color: var(--green-dark); }
+.all-good p { color: var(--muted); font-size: 14px; margin-top: 2px; line-height: 1.45; }
+
+.card { position: relative; }
+.card small { font-size: 11.5px; }
+.card-alert { border-color: #f3c99b; background: #fffaf4; }
+.card-count { position: absolute; top: 10px; right: 10px; background: var(--alert); color: #fff; font-size: 12px; font-weight: 700; border-radius: 12px; min-width: 22px; padding: 2px 7px; text-align: center; }
+.handled { margin-top: 18px; }
+.handled .list { margin-top: 10px; }
+
+/* ---------- TIA Admin (rådgiver-system) ---------- */
+.tia { --navy: #1f2a44; --teal: #1d7f8c; --tia-line: #d5dbe4;
+  min-height: 100vh; background: #eef1f5; font-size: 14px; color: #1e2532; padding-bottom: 80px; }
+.tia-top { background: var(--navy); color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; gap: 12px; flex-wrap: wrap; }
+.tia-brand { display: flex; align-items: center; gap: 10px; }
+.tia-brand small { color: rgba(255,255,255,.6); font-size: 12px; margin: 0; }
+.tia-mark { background: var(--teal); font-weight: 900; letter-spacing: 1px; padding: 6px 8px; border-radius: 4px; }
+.tia-env { background: #f0b429; color: #3b2b00; font-size: 10.5px; font-weight: 800; letter-spacing: 1px; padding: 3px 7px; border-radius: 3px; }
+.tia-user { display: flex; gap: 16px; align-items: center; font-size: 13px; color: rgba(255,255,255,.8); }
+.tia-user a { color: #9fd8e0; }
+.tia-body { display: grid; gap: 16px; padding: 16px; max-width: 1280px; margin: 0 auto; }
+@media (min-width: 960px) { .tia-body { grid-template-columns: 260px 1fr; padding: 20px; } }
+.tia-side { display: flex; flex-direction: column; gap: 12px; }
+.tia-box { background: #fff; border: 1px solid var(--tia-line); border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.tia-box h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6b768a; margin-bottom: 6px; }
+.tia-box span { color: #4a5568; font-size: 13px; }
+.tia-hint { color: #6b768a; font-size: 12.5px; line-height: 1.45; margin-bottom: 6px; }
+.tia-scenario { border: 1px solid var(--tia-line); border-radius: 4px; padding: 7px 10px; font-size: 13px; background: #f8fafc; }
+.tia-scenario:hover:not(:disabled) { border-color: var(--teal); background: #eef8f9; }
+.tia-scenario:disabled { opacity: .45; cursor: not-allowed; }
+.tia-btn { display: inline-flex; align-items: center; justify-content: center; background: var(--teal); color: #fff; font-weight: 600; padding: 8px 14px; border-radius: 4px; font-size: 13.5px; text-align: center; }
+.tia-btn:hover { background: #17707b; }
+.tia-btn-ghost { background: #fff; color: var(--navy); border: 1px solid var(--tia-line); }
+.tia-btn-ghost:hover { background: #f1f4f8; }
+.tia-btn-danger { background: #fff; color: #b42318; border: 1px solid #f1c3be; margin-top: 6px; }
+.tia-btn-danger:hover { background: #fdf0ef; }
+.tia-btn-wide { width: 100%; margin-top: 16px; padding: 11px; }
+.tia-main { min-width: 0; }
+.tia-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--tia-line); margin-bottom: 14px; overflow-x: auto; }
+.tia-tabs button { padding: 9px 14px; color: #5a6578; font-weight: 600; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tia-tabs button.on { color: var(--navy); border-bottom-color: var(--teal); }
+.tia-panel { background: #fff; border: 1px solid var(--tia-line); border-radius: 6px; padding: 16px; margin-bottom: 14px; overflow-x: auto; }
+.tia-panel h2 { font-size: 15px; color: var(--navy); margin-bottom: 12px; }
+.tia-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.tia-panel-head h2 { margin: 0; }
+.tia-meta { color: #6b768a; font-size: 13px; }
+.tia-meta em { color: #b26a00; font-style: normal; }
+.tia-muted { background: #f8fafc; }
+.tia-muted h2 { color: #8a94a6; }
+.tia-grid { display: grid; gap: 12px 16px; }
+@media (min-width: 720px) { .tia-grid { grid-template-columns: 1fr 1fr; } .tia-span2 { grid-column: span 2; } }
+.tia label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; font-weight: 600; color: #4a5568; }
+.tia input, .tia select { font: inherit; font-size: 14px; font-weight: 400; padding: 7px 9px; border: 1px solid #c3ccd8; border-radius: 4px; background: #fff; color: inherit; width: 100%; }
+.tia input:disabled, .tia select:disabled { background: #f1f4f8; color: #6b768a; }
+.tia input:focus, .tia select:focus { outline: 2px solid #9fd8e0; border-color: var(--teal); }
+.tia .tia-check { flex-direction: row; align-items: center; gap: 8px; font-weight: 500; color: #1e2532; font-size: 14px; }
+.tia .tia-check input { width: 16px; height: 16px; }
+.tia-multi { border: 1px solid var(--tia-line); border-radius: 4px; padding: 8px 12px 10px; display: grid; gap: 6px; margin: 0; }
+@media (min-width: 720px) { .tia-multi { grid-template-columns: 1fr 1fr; } }
+.tia-multi legend { font-size: 12.5px; font-weight: 600; color: #4a5568; padding: 0 4px; }
+.tia-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tia-table th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px; color: #6b768a; padding: 6px 8px; border-bottom: 1px solid var(--tia-line); background: #f8fafc; }
+.tia-table td { padding: 7px 8px; border-bottom: 1px solid #edf0f4; vertical-align: middle; }
+.tia-edit td { padding: 5px 6px; }
+.tia-age { width: 90px; }
+.tia-old { color: #8a94a6; text-decoration: line-through; }
+.tia-new { color: #0b6b2a; font-weight: 600; }
+.tia-link { color: #b42318; font-size: 13px; }
+.tia-add { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+@media (min-width: 720px) { .tia-add { grid-template-columns: 2fr 1fr 90px auto; } }
+.tia-kind { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 3px; }
+.tia-kind-raad { background: #fff2d9; color: #8a4b00; }
+.tia-kind-bekr { background: #e3f2e6; color: #0b6b2a; }
+.tia-ok { color: #0b6b2a; font-weight: 600; }
+.tia-open { color: #b26a00; font-weight: 600; }
+.tia-bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--navy); color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 20px; z-index: 15; box-shadow: 0 -4px 16px rgba(0,0,0,.15); }
+.tia-bar-actions { display: flex; gap: 8px; }
+.tia-toast { position: fixed; top: 64px; left: 50%; transform: translateX(-50%); background: #0b6b2a; color: #fff; padding: 10px 16px; border-radius: 6px; z-index: 30; box-shadow: 0 6px 20px rgba(0,0,0,.2); font-size: 13.5px; max-width: calc(100% - 32px); animation: fade .2s; }
+.tia-toast a { color: #c9f2d4; text-decoration: underline; margin-left: 8px; white-space: nowrap; }
+.tia-review h2 { font-size: 18px; color: var(--navy); margin-bottom: 12px; padding-right: 30px; }
+.tia .modal .tia-review h3 { font-size: 12.5px; color: var(--navy); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .5px; }
+.tia-msgs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.tia-msgs li { border: 1px solid var(--tia-line); border-radius: 4px; padding: 10px 12px; }
+.tia-msgs strong { display: block; margin: 4px 0 2px; }
+.tia .modal .tia-msgs p { font-size: 13px; color: #4a5568; }
+.tia .modal { max-width: 680px; }

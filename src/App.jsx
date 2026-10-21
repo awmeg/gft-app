@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
-import { customer, messages, nav, claims as baseClaims } from './data.js'
+import { nav, claims as baseClaims } from './data.js'
+import { useStore } from './store.jsx'
+import { openAdvice } from './pages/Info.jsx'
 import { Logo, MenuIcon, CloseIcon, MailIcon, LockIcon, UserIcon } from './icons.jsx'
 import { useRoute, useStored, navigate, PageHead } from './lib.jsx'
 import Home from './pages/Home.jsx'
@@ -11,6 +13,7 @@ import { PaymentList, PaymentDetail } from './pages/Payments.jsx'
 import Surplus from './pages/Surplus.jsx'
 import Benefits from './pages/Benefits.jsx'
 import Contact from './pages/Contact.jsx'
+import TiaAdmin from './pages/TiaAdmin.jsx'
 
 export default function App() {
   const route = useRoute()
@@ -18,6 +21,7 @@ export default function App() {
   const query = new URLSearchParams(qs)
   const [section, sub] = path.split('/').filter(Boolean)
 
+  const { state } = useStore()
   const [menuOpen, setMenuOpen] = useState(false)
   const [loggedOut, setLoggedOut] = useState(false)
   const [read, setRead] = useStored('gft-read-messages', [])
@@ -25,7 +29,8 @@ export default function App() {
   const [sent, setSent] = useStored('gft-sent-messages', [])
 
   const claims = [...myClaims, ...baseClaims]
-  const unread = messages.filter((m) => !read.includes(m.id)).length
+  const unread = state.messages.filter((m) => !read.includes(m.id)).length
+  const adviceCount = openAdvice(state).length
 
   useEffect(() => setMenuOpen(false), [route])
   useEffect(() => {
@@ -34,6 +39,9 @@ export default function App() {
 
   const toggleRead = (id) => setRead((r) => (r.includes(id) ? r.filter((x) => x !== id) : [...r, id]))
   const markRead = (id) => setRead((r) => (r.includes(id) ? r : [...r, id]))
+
+  // Skjult rådgiver-side – har sit eget layout
+  if (section === 'tia') return <TiaAdmin />
 
   if (loggedOut) {
     return (
@@ -48,7 +56,7 @@ export default function App() {
   let page
   switch (section) {
     case undefined:
-      page = <Home claims={claims} unread={unread} />
+      page = <Home claims={claims} unread={unread} adviceCount={adviceCount} />
       break
     case 'vigtig-info':
       page = <Info />
@@ -88,7 +96,7 @@ export default function App() {
         <a href="#/" className="logo-link"><Logo /></a>
         <button className="burger" onClick={() => setMenuOpen(true)} aria-label="Åbn menu" aria-expanded={menuOpen}>
           <MenuIcon />
-          {unread > 0 && <span className="dot" />}
+          {unread + adviceCount > 0 && <span className="dot" />}
         </button>
       </header>
 
@@ -98,8 +106,8 @@ export default function App() {
         <div className="sidebar-user">
           <UserIcon />
           <span>
-            {customer.name}
-            <small>Kundenr. {customer.customerNo}</small>
+            {state.customer.name}
+            <small>Kundenr. {state.customer.customerNo}</small>
           </span>
           <button className="drawer-close" onClick={() => setMenuOpen(false)} aria-label="Luk menu"><CloseIcon /></button>
         </div>
@@ -108,7 +116,7 @@ export default function App() {
             <li key={item.path}>
               <a href={'#' + item.path} className={active === item.path ? 'active' : ''} aria-current={active === item.path ? 'page' : undefined}>
                 {item.label}
-                {item.isNew && <em>NY</em>}
+                {item.path === '/vigtig-info' && adviceCount > 0 ? <span className="count">{adviceCount}</span> : item.isNew && <em>NY</em>}
               </a>
             </li>
           ))}
@@ -120,6 +128,7 @@ export default function App() {
           <button onClick={() => setLoggedOut(true)}>
             <LockIcon /> Log ud
           </button>
+          <a href="#/tia" className="admin-link" title="Kun for rådgivere">TIA Admin</a>
         </div>
       </nav>
 

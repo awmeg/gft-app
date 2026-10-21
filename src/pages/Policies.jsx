@@ -1,63 +1,77 @@
-import { policies, policyById, importantInfo, claimStatuses } from '../data.js'
+import { policyById, importantInfo, claimStatuses } from '../data.js'
 import { PolicyIcon, ChevronIcon } from '../icons.jsx'
 import { PageHead, Facts, Pill, kr, fmtDate } from '../lib.jsx'
+import { useStore } from '../store.jsx'
+import { FIELDS, fmtField, yearlyPrice, totalYearly } from '../rules.js'
 
 export function PolicyList() {
-  const total = policies.reduce((s, p) => s + p.yearly, 0)
+  const { state } = useStore()
+  const ids = Object.keys(state.policies)
   return (
     <>
-      <PageHead title="Forsikringer" intro={`Du har ${policies.length} forsikringer hos os. Samlet pris: ${kr(total)} om året.`} />
+      <PageHead title="Forsikringer" intro={`Du har ${ids.length} forsikringer hos os. Samlet pris: ${kr(totalYearly(state))} om året.`} />
       <ul className="list policy-list">
-        {policies.map((p) => (
-          <li key={p.id}>
-            <a href={`#/forsikringer/${p.id}`}>
-              <PolicyIcon type={p.icon} />
-              <span className="grow">
-                <strong>{p.title}</strong>
-                <small>Police {p.policyNo}</small>
-              </span>
-              <span className="amount">{kr(p.yearly)}<small>pr. år</small></span>
-              <ChevronIcon />
-            </a>
-          </li>
-        ))}
+        {ids.map((id) => {
+          const meta = policyById(id)
+          const p = state.policies[id]
+          return (
+            <li key={id}>
+              <a href={`#/forsikringer/${id}`}>
+                <PolicyIcon type={meta.icon} />
+                <span className="grow">
+                  <strong>{meta.title}</strong>
+                  <small>Police {p.policyNo}</small>
+                </span>
+                <span className="amount">{kr(yearlyPrice(id, p))}<small>pr. år</small></span>
+                <ChevronIcon />
+              </a>
+            </li>
+          )
+        })}
       </ul>
     </>
   )
 }
 
 export function PolicyDetail({ id, claims }) {
-  const p = policyById(id)
-  if (!p) return <PageHead title="Forsikringen findes ikke" back={{ path: '/forsikringer', label: 'Forsikringer' }} />
-  const related = claims.filter((c) => c.policyId === p.id)
+  const { state } = useStore()
+  const meta = policyById(id)
+  const p = state.policies[id]
+  const back = { path: '/forsikringer', label: 'Forsikringer' }
+  if (!meta || !p) return <PageHead title="Forsikringen findes ikke" back={back} />
+  const related = claims.filter((c) => c.policyId === id)
+  const extra = id === 'indbo' ? [['Adresse', state.customer.address], ['Husstand', `${state.household.length} personer`]] : id === 'hus' ? [['Adresse', state.customer.address]] : []
+
   return (
     <>
-      <PageHead title={p.title} back={{ path: '/forsikringer', label: 'Forsikringer' }} />
+      <PageHead title={meta.title} back={back} />
       <div className="grid-2">
         <section className="panel">
-          <div className="panel-icon"><PolicyIcon type={p.icon} size={52} /></div>
+          <div className="panel-icon"><PolicyIcon type={meta.icon} size={52} /></div>
           <Facts
             rows={[
               ['Policenummer', p.policyNo],
-              ['Pris pr. år', kr(p.yearly)],
+              ['Pris pr. år', kr(yearlyPrice(id, p))],
               ['Selvrisiko', p.deductible ? kr(p.deductible) : 'Ingen'],
               ['Kunde siden', fmtDate(p.since)],
-              ...p.details,
+              ...extra,
             ]}
           />
         </section>
         <section className="panel">
-          <h2>Det dækker forsikringen</h2>
+          <h2>Dine oplysninger</h2>
+          <Facts rows={FIELDS[id].map((f) => [f.label, fmtField(f, p[f.key], state)])} />
+          <h3>Det dækker forsikringen altid</h3>
           <ul className="checks">
-            {p.coverage.map((c) => <li key={c}>{c}</li>)}
+            {meta.coverage.map((c) => <li key={c}>{c}</li>)}
           </ul>
         </section>
       </div>
 
       <section className="callout">
         <span className="badge">VIGTIGT</span>
-        <h2>Hvornår skal du kontakte os?</h2>
-        <p>{importantInfo[p.id].when}</p>
+        <h2>Står dine oplysninger korrekt?</h2>
+        <p>{importantInfo[id].when} {importantInfo[id].why}</p>
       </section>
 
       <h2 className="section-title">Skader på denne forsikring</h2>
@@ -81,8 +95,8 @@ export function PolicyDetail({ id, claims }) {
       )}
 
       <div className="actions">
-        <a className="btn" href={`#/skader/ny?forsikring=${p.id}`}>Anmeld en skade</a>
-        <a className="btn btn-ghost" href={`#/kontakt/skriv?emne=${encodeURIComponent('Ændring af ' + p.title.toLowerCase())}`}>Skriv til GFT</a>
+        <a className="btn" href={`#/skader/ny?forsikring=${id}`}>Anmeld en skade</a>
+        <a className="btn btn-ghost" href={`#/kontakt/skriv?emne=${encodeURIComponent('Ændring af ' + meta.title.toLowerCase())}`}>Skriv til GFT</a>
       </div>
     </>
   )

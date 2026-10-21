@@ -1,11 +1,15 @@
-import { policies, payments, paymentTotal, surplus, customer } from '../data.js'
+import { policyById, surplus } from '../data.js'
 import { PolicyIcon, ChevronIcon } from '../icons.jsx'
 import { kr, fmtDate } from '../lib.jsx'
+import { useStore } from '../store.jsx'
+import { upcomingPayment } from './Payments.jsx'
+import { paymentTotal } from '../data.js'
 
-export default function Home({ claims, unread }) {
-  const next = payments.find((p) => p.status === 'upcoming')
+export default function Home({ claims, unread, adviceCount }) {
+  const { state } = useStore()
+  const next = upcomingPayment(state)
   const openClaims = claims.filter((c) => !['paid', 'rejected'].includes(c.status)).length
-  const firstName = customer.name.split(' ')[0]
+  const firstName = state.customer.name.split(' ')[0]
 
   return (
     <>
@@ -42,28 +46,35 @@ export default function Home({ claims, unread }) {
         <a className="link" href="#/forsikringer">Se din forsikringsoversigt</a>
       </div>
       <ul className="list policy-list">
-        {policies.map((p) => (
-          <li key={p.id}>
-            <a href={`#/forsikringer/${p.id}`}>
-              <PolicyIcon type={p.icon} />
-              <span className="grow">
-                <strong>{p.title}</strong>
-                <small>Police {p.policyNo}</small>
-              </span>
-              <ChevronIcon />
-            </a>
-          </li>
-        ))}
+        {Object.entries(state.policies).map(([id, p]) => {
+          const meta = policyById(id)
+          return (
+            <li key={id}>
+              <a href={`#/forsikringer/${id}`}>
+                <PolicyIcon type={meta.icon} />
+                <span className="grow">
+                  <strong>{meta.title}</strong>
+                  <small>Police {p.policyNo}</small>
+                </span>
+                <ChevronIcon />
+              </a>
+            </li>
+          )
+        })}
       </ul>
 
       <div className="two-col">
-        <a className="tip" href="#/vigtig-info">
-          <strong>Vigtig info til dig</strong>
+        <a className={`tip ${adviceCount ? 'tip-alert' : ''}`} href="#/vigtig-info">
+          <strong>
+            Vigtig info til dig
+            {adviceCount > 0 && <span className="count">{adviceCount}</span>}
+          </strong>
           <span>
-            Vi anbefaler, at du kigger under “Vigtig info til dig” i menuen. Her er hjælp til, hvordan du sikrer dig, at
-            dine oplysninger er korrekte.
+            {adviceCount > 0
+              ? `Der er sket ændringer, som kan have betydning for din dækning. Du har ${adviceCount} ${adviceCount === 1 ? 'punkt' : 'punkter'}, du bør tjekke.`
+              : 'Vi anbefaler, at du kigger under “Vigtig info til dig” i menuen. Her er hjælp til, hvordan du sikrer dig, at dine oplysninger er korrekte.'}
           </span>
-          <span className="tip-cta">Læs mere →</span>
+          <span className="tip-cta">{adviceCount > 0 ? 'Se hvad du skal tjekke →' : 'Læs mere →'}</span>
         </a>
         <div className="banner">
           <h3>Mangler der noget?</h3>
