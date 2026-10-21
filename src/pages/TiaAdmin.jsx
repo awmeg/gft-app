@@ -64,7 +64,7 @@ export default function TiaAdmin() {
           <span className="tia-env">SIMULERING</span>
         </div>
         <div className="tia-user">
-          <span>Rådgiver: Lars Nielsen</span>
+          <span>Rådgiver: Louise Dorte Hansen</span>
           <a href="#/">← Til kundens app</a>
         </div>
       </header>
